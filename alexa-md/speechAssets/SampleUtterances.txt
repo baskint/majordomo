@@ -1,0 +1,2 @@
+MajorDomoIntent who is at the door
+PleaseOpenTheDoorIntent please open the door
