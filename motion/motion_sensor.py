@@ -21,6 +21,7 @@ class MotionSensor:
     def start(self, on_motion_detected):
         motion_count = 0
         while True:
+            time.sleep(self.read_delay)
             i = GPIO.input(self.sensor_pin)
             # When output from motion sensor is LOW
             if i == 0:
@@ -39,8 +40,6 @@ class MotionSensor:
                     motion_count = 0
                 else:
                     motion_count += 1
-
-            time.sleep(self.read_delay)
 
 if __name__ == "__main__":
     sensor = MotionSensor(11, led_pin=12)
