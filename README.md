@@ -22,7 +22,10 @@ sudo vim /etc/wpa_supplicant/wpa_supplicant.conf
 ```
 Restart
 
-
+Install aws cli
+```bash
+sudo pip install awscli
+```
 
 ## Todo
 
