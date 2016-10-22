@@ -25,6 +25,7 @@ PIC_STATUS=$?
 
 if test "${PIC_STATUS}" -ne 0 ; then
   echo "error taking picture, raspstill returned '${PIC_STATUS}'"
+  rm -f "${TMP_FILE}"
   exit 130
 fi
 
@@ -34,8 +35,9 @@ S3_STATUS=$?
 
 if test "${S3_STATUS}" -ne 0 ; then
   echo "error taking picture, aws s3 returned '${S3_STATUS}'"
+  rm -f "${TMP_FILE}"
   exit 131
 fi
 
+rm -f "${TMP_FILE}"
 exit 0
-
