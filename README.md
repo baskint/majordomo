@@ -27,6 +27,17 @@ Install aws cli
 sudo pip install awscli
 ```
 
+```bash
+pip3 install virtualenv
+pip3 install virtualenvwrapper
+export WORKON_HOME=~/Envs
+echo -e "\nexport VIRTUALENVWRAPPER_PYTHON=\`which python3\`" >> ~/.bash_profile
+source /usr/local/bin/virtualenvwrapper.sh
+mkvirtualenv cv
+workon cv
+pip install -r requirements.txt
+```
+
 ## Todo
 
 ### Camera
