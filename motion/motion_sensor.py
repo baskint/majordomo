@@ -6,10 +6,12 @@ GPIO.setmode(GPIO.BOARD)
 
 
 class MotionSensor:
-    def __init__(self, sensor_pin, led_pin=None, movement_min=5):
+    def __init__(self, sensor_pin, led_pin=None,
+                 movement_min=5, read_delay=2.5):
         self.sensor_pin = sensor_pin
         self.led_pin = led_pin
         self.movement_min = movement_min
+        self.read_delay = read_delay
         # Read output from PIR motion sensor
         GPIO.setup(self.sensor_pin, GPIO.IN)
         # LED output pin
@@ -27,7 +29,6 @@ class MotionSensor:
                     GPIO.output(self.led_pin, 0)
 
                 motion_count = 0
-                time.sleep(0.1)
             elif i == 1:
                 if self.led_pin:
                     # Turn ON LED
@@ -39,7 +40,7 @@ class MotionSensor:
                 else:
                     motion_count += 1
 
-                time.sleep(0.1)
+            time.sleep(self.read_delay)
 
 if __name__ == "__main__":
     sensor = MotionSensor(11, led_pin=12)
