@@ -22,6 +22,10 @@
  * App ID for the skill
  */
 var APP_ID = undefined; //OPTIONAL: replace with "amzn1.echo-sdk-ams.app.[your-unique-value-here]";
+var AWS = require('aws-sdk');
+// AWS.config.region = 'us-west-2';
+const https = require('https');
+
 
 /**
  * Array containing people at door.
@@ -61,6 +65,7 @@ Fact.prototype.eventHandlers.onSessionStarted = function (sessionStartedRequest,
 Fact.prototype.eventHandlers.onLaunch = function (launchRequest, session, response) {
     //console.log("onLaunch requestId: " + launchRequest.requestId + ", sessionId: " + session.sessionId);
     handleNewFactRequest(response);
+    // handleOpenTheDoor(response);
 };
 
 /**
@@ -99,7 +104,7 @@ Fact.prototype.intentHandlers = {
 /**
  * Gets a random new fact from the list and returns to the user.
  */
-function handleNewFactRequest(response) {
+function handleOpenTheDoor(response) {
     // Get a random space fact from the space people list
     var factIndex = Math.floor(Math.random() * PEOPLE.length);
     var randomFact = PEOPLE[factIndex];
@@ -110,16 +115,52 @@ function handleNewFactRequest(response) {
     response.tellWithCard(speechOutput, cardTitle, speechOutput);
 }
 
-*/
-function handleOpenTheDoor(response) {
-   // Get a random space fact from the space people list
-   var factIndex = Math.floor(Math.random() * PEOPLE.length);
-   var randomFact = PEOPLE[factIndex];
 
-   // Create speech output
-   var speechOutput = "Major Domo can not open the door at this time";
-   var cardTitle = "The person is";
-   response.tellWithCard(speechOutput, cardTitle, speechOutput);
+function handleNewFactRequest(response) {
+
+    // var s3 = new AWS.S3();
+    // var params = {Bucket: 'iothack2016', Key: "atthedoor.txt"};
+    // var speechOutput;
+    var options = {
+        hostname: 's3-us-west-2.amazonaws.com',
+        path: '/iothack2016/latest',
+        method: 'GET',
+        headers: {
+            //'Accept': 'text/plain'
+        }
+    };
+
+    console.log('entering');
+
+    var req = https.request(options, function(res) {
+        console.log('my string');
+        //console.log(res.body);
+        res.setEncoding('utf8');
+        var body = '';
+        res.on('data', function (chunk) {
+             body += chunk;
+        });
+        res.on('end', function () {
+            console.log('ended');
+            console.log(body);
+            var speechOutput = body + " is at the door";
+            var cardTitle = "The person is";
+            response.tellWithCard(speechOutput, cardTitle, speechOutput);
+        });
+
+
+    });
+
+    req.on('error', function(e) {
+       console.error(e);
+    });
+
+    req.end();
+
+
+    console.log('exiting');
+
+
 }
 
 // Create the handler that responds to the Alexa Request.
